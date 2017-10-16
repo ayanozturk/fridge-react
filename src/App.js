@@ -1,43 +1,56 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom'
 
 class App extends React.Component {
 
     constructor(){
-        super(); // enables this
-        this.state = {
-            txt: 'this is state text',
-            cat: 4
-        };
+        super();
 
-    };
+        this.state = {val:  0};
 
-    update( e ) {
-        this.setState({txt: e.target.value});
-    };
+        this.update = this.update.bind(this)
+    }
+
+    update(){
+        this.setState({val: this.state.val + 1})
+    }
+
+    componentWillMount() {
+        console.log('componentWillMount');
+    }
+    componentDidMount() {
+        console.log('componentDidMount');
+    }
+
+    componentWillUnmount() {
+        console.log('componentWillUnmount');
+    }
 
     render(){
-        let txt = this.props.txt;
-        let cat = this.props.cat;
+        console.log('render');
+        return (
+            <button onClick={this.update}>{this.state.val}</button>
+        )
+    }
+}
 
+class Wrapper extends React.Component {
+    static mount(){
+        ReactDOM.render(<App />, document.getElementById('a'))
+    }
+    static unmount(){
+        ReactDOM.unmountComponentAtNode(document.getElementById('a'))
+    }
+
+    render() {
         return (
             <div>
-                <input type="text" onChange={this.update.bind(this)} />
-                <h1>{this.state.txt}</h1>
-                <h1>{this.state.cat}</h1>
+                <button onClick={Wrapper.mount.bind(this)}>Mount</button>
+                <button onClick={Wrapper.unmount.bind(this)}>UnMount</button>
+                <div id="a"/>
             </div>
         )
     }
 }
 
-App.propTypes = {
-    txt: PropTypes.string,
-    cat: PropTypes.number
-};
-
-App.defaultProps = {
-    txt: "this is default",
-    cat: 5
-};
-
-export default App
+export default Wrapper
